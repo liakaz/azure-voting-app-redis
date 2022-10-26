@@ -33,9 +33,9 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          envFrom:
-          - configMapRef:
-              name: {{ .Release.Name }}-configmap
+          volumeMounts:
+          - name: config-volume
+            mountPath: /etc/config
           env:
           - name: REDIS
             value: {{ .Values.backendName }}
@@ -53,6 +53,15 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: config-volume
+          configMap:
+            # Provide the name of the ConfigMap containing the files you want
+            # to add to the container
+            name: {{ .Release.Name }}-configmap
+            items:
+            - key: TITLE
+              path: title.txt
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -17,7 +17,7 @@ redis:
 image:
   repository: liakaz/azure-vote-front
   pullPolicy: IfNotPresent
-  tag: "101222"
+  tag: "102422"
 
 imagePullSecrets: []
 nameOverride: ""
